@@ -43,6 +43,16 @@ The **[GitHub Pages demo](https://redrogod69.github.io/PathwayGPS/)** is a stati
 
 **Analysing any other variant** requires the FastAPI backend, which queries the public databases live. The same applies to node expansion, report export, snapshots and gene-list analysis. GitHub Pages cannot run a backend, so run it locally:
 
+## Deploy the full app (free)
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/redrogod69/PathwayGPS)
+
+1. Click **Deploy to Render** and sign in with GitHub. The `render.yaml` blueprint builds the `Dockerfile`, a single container serving the API and UI. On the free plan the service sleeps when idle, so the first request after a pause takes about a minute.
+2. Copy the service URL, e.g. `https://pathwaygps.onrender.com`. The full app already works at that address.
+3. To run the full app on **GitHub Pages** as well, go to *Settings → Secrets and variables → Actions → Variables* and add `PATHWAYGPS_API_URL` = that URL, then re-run the *Test & deploy* workflow. The Pages site will query the live backend, and falls back to the recorded demo if the backend is unreachable.
+
+Any Docker host (Fly.io, Railway, Hugging Face Spaces, a VM) works the same way: `docker build -t pathwaygps . && docker run -p 8000:8000 pathwaygps`.
+
 ## Run locally
 
 Requires Python ≥ 3.9 and Node ≥ 18.

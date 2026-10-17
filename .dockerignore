@@ -1,0 +1,8 @@
+**/node_modules
+**/.venv
+frontend/dist
+frontend/dist-pages
+data/cache
+data/snapshots
+legacy
+.git

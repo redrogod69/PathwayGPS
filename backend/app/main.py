@@ -68,7 +68,10 @@ class EnrichmentRequest(BaseModel):
 
 
 app = FastAPI(title="PathwayGPS", version=VERSION, description="From mutation to mechanism — evidence-backed variant navigation.")
-app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:4173", "http://127.0.0.1:4173"],
+import os as _os
+_origins = ["http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:4173", "http://127.0.0.1:4173"]
+_origins += [o.strip() for o in (_os.getenv("PATHWAYGPS_CORS_ORIGINS") or "").split(",") if o.strip()]
+app.add_middleware(CORSMiddleware, allow_origins=_origins, expose_headers=["Content-Disposition"],
                    allow_methods=["*"], allow_headers=["*"])
 
 

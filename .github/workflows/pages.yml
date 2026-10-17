@@ -55,6 +55,7 @@ jobs:
         working-directory: frontend
         env:
           VITE_STATIC: "1"
+          VITE_API_BASE: ${{ vars.PATHWAYGPS_API_URL }}
           PAGES_BASE: /${{ github.event.repository.name }}/
         run: |
           npm ci

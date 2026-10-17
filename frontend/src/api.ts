@@ -2,7 +2,11 @@ import type { Analysis, PathResult, Synthesis, Workbench } from './types';
 import { compareDiff, explainPath, kRoutes, retrievalChat } from './lib/staticEngine';
 
 /** Static GitHub Pages build: no backend; recorded demo analyses are served from /demo. */
-export const STATIC_DEMO = import.meta.env.VITE_STATIC === '1';
+const API_BASE: string = (import.meta.env.VITE_API_BASE ?? '').replace(/\/$/, '');
+const STATIC_BUILD = import.meta.env.VITE_STATIC === '1';
+/** True when this build has no reachable backend and is serving recorded demo data. */
+export let STATIC_DEMO = STATIC_BUILD && !API_BASE;
+export const HOSTED_API = API_BASE;
 const BASE = import.meta.env.BASE_URL;
 export const STATIC_NOTE = 'Not available in the static GitHub Pages demo — run PathwayGPS locally (see README) for live queries.';
 let demoIndex: Promise<any> | null = null;
@@ -35,7 +39,7 @@ async function request<T>(url: string, init?: RequestInit, timeoutMs = 180_000):
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), timeoutMs);
   try {
-    const res = await fetch(url, { ...init, signal: ctrl.signal });
+    const res = await fetch(url.startsWith('/api') ? API_BASE + url : url, { ...init, signal: ctrl.signal });
     if (!res.ok) {
       let detail = `${res.status} ${res.statusText}`;
       try {
@@ -57,7 +61,7 @@ async function request<T>(url: string, init?: RequestInit, timeoutMs = 180_000):
 const json = (body: unknown): RequestInit => ({ method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
 
 async function download(url: string, body: unknown, fallbackName: string) {
-  const res = await fetch(url, body === undefined ? undefined : json(body));
+  const res = await fetch(API_BASE + url, body === undefined ? undefined : json(body));
   if (!res.ok) throw new ApiError(res.status, `Export failed (${res.status})`);
   const blob = await res.blob();
   const dispo = res.headers.get('Content-Disposition') || '';
@@ -94,7 +98,7 @@ const liveApi = {
   importSnapshot: (payload: unknown) => request<Analysis>('/api/snapshots/import', json(payload)),
   report: (id: string, format: 'md' | 'html' | 'json', workbench: Workbench) => download(`/api/analysis/${id}/report`, { format, workbench }, `PathwayGPS_report.${format}`),
   exportGraph: async (id: string, format: 'json' | 'cytoscape') => {
-    const res = await fetch(`/api/analysis/${id}/export/graph?format=${format}`);
+    const res = await fetch(`${API_BASE}/api/analysis/${id}/export/graph?format=${format}`);
     if (!res.ok) throw new ApiError(res.status, 'Export failed');
     const blob = await res.blob();
     const a = document.createElement('a');
@@ -147,4 +151,22 @@ const staticApi: typeof liveApi = {
   },
 };
 
-export const api = STATIC_DEMO ? staticApi : liveApi;
+/** Hosted static build with a backend URL: use the live API, and fall back to the recorded demo if it is unreachable. */
+function withFallback(): typeof liveApi {
+  const out: any = {};
+  for (const key of Object.keys(liveApi) as (keyof typeof liveApi)[]) {
+    out[key] = async (...args: any[]) => {
+      if (!STATIC_DEMO) {
+        try { return await (liveApi[key] as any)(...args); } catch (e) {
+          if (!(e instanceof ApiError) || e.status !== 0 || key === 'chat' || key === 'routes' || key === 'path' || key === 'expand') throw e;
+          STATIC_DEMO = true;
+          window.dispatchEvent(new Event('pathwaygps:static-fallback'));
+        }
+      }
+      return (staticApi[key] as any)(...args);
+    };
+  }
+  return out;
+}
+
+export const api: typeof liveApi = STATIC_BUILD ? (API_BASE ? withFallback() : staticApi) : liveApi;

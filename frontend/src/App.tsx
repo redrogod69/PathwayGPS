@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Database, FlaskConical } from 'lucide-react';
-import { api, STATIC_DEMO } from './api';
+import { api, HOSTED_API, STATIC_DEMO } from './api';
 import type { Analysis } from './types';
 import AssistantModal from './components/AssistantModal';
 import { Navbar, PageHeader, Sidebar, ViewId } from './components/Shell';
@@ -38,6 +38,8 @@ export default function App() {
   const [evidenceFocus, setEvidenceFocus] = useState<{ id: string; n: number } | null>(null);
   const [recent, setRecent] = useState<string[]>(loadRecent);
   const reqId = useRef(0);
+  const [staticMode, setStaticMode] = useState(STATIC_DEMO);
+  useEffect(() => { const f = () => setStaticMode(true); window.addEventListener('pathwaygps:static-fallback', f); return () => window.removeEventListener('pathwaygps:static-fallback', f); }, []);
 
   const notify = useCallback((msg: string, tone: Toast['tone'] = 'ok') => {
     const id = Date.now() + Math.random();
@@ -146,9 +148,9 @@ export default function App() {
         <Sidebar view={view} onSelect={setView} analysis={analysis} badges={badges} />
         <main className="min-w-0 flex-1 overflow-y-auto">
           <div className="mx-auto max-w-[1600px] px-4 py-6 md:px-6">
-            {STATIC_DEMO && (
+            {staticMode && (
               <div className="mb-4 rounded-xl border border-violet-500/30 bg-violet-500/10 px-4 py-2.5 text-xs text-violet-100">
-                <b>Static demo (GitHub Pages).</b> Showing real analyses recorded from ClinVar, Ensembl VEP, UniProt, Reactome, IntAct, Open Targets, CIViC and PubMed for the demo variants
+                <b>{HOSTED_API ? 'Live backend unreachable — showing the static demo.' : 'Static demo (GitHub Pages).'}</b> Showing real analyses recorded from ClinVar, Ensembl VEP, UniProt, Reactome, IntAct, Open Targets, CIViC and PubMed for the demo variants
                 ({examples.map((e) => e.label).join(', ')}). Paths, routes and the evidence assistant run in your browser. Live querying of any variant, node expansion, reports and snapshots need the local backend — see the{' '}
                 <a className="text-cyan-300 underline" href="https://github.com/redrogod69/PathwayGPS#run-locally" target="_blank" rel="noreferrer">README</a>.
               </div>
