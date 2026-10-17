@@ -1,17 +1,19 @@
 <div align="center">
 
+**Special thanks to Nayonica for the project idea.**
+
 # 🧬 PathwayGPS
 
 ### From mutation to mechanism.
 
 **An evidence-backed navigation layer that follows a genetic variant through its gene, protein, Reactome pathways and downstream biology, with the source record and literature behind every relationship.**
 
-[![Live demo](https://img.shields.io/badge/Live%20demo-GitHub%20Pages-22d3ee?style=for-the-badge)](https://redrogod69.github.io/PathwayGPS/)
+[![Live app](https://img.shields.io/badge/Live%20app-GitHub%20Pages-22d3ee?style=for-the-badge)](https://redrogod69.github.io/PathwayGPS/)
 [![Tests](https://github.com/redrogod69/PathwayGPS/actions/workflows/pages.yml/badge.svg)](https://github.com/redrogod69/PathwayGPS/actions/workflows/pages.yml)
 ![Python](https://img.shields.io/badge/FastAPI-Python%203.9%2B-0f766e)
 ![React](https://img.shields.io/badge/React%2018-TypeScript%20·%20Cytoscape.js-1e293b)
 
-[**Try the demo →**](https://redrogod69.github.io/PathwayGPS/?q=EGFR%20L858R) · [Run locally](#run-locally) · [How it works](#how-it-works) · [Scientific integrity](#scientific-integrity)
+[**Open the live app →**](https://redrogod69.github.io/PathwayGPS/?q=EGFR%20L858R) · [Run locally](#run-locally) · [How it works](#how-it-works) · [Scientific integrity](#scientific-integrity)
 
 *MedVision ’26 · BioNav · B.Tech Biotechnology, SRM Institute of Science and Technology*
 
@@ -37,21 +39,9 @@ Variant interpretation means jumping between ClinVar, UniProt, Reactome, KEGG, P
 | ✨ **AI Research Assistant** | Chat about the active variant. Every answer cites evidence records. It runs as a deterministic retrieval assistant by default; with an API key it uses Claude, restricted to the evidence ledger. |
 | 🔬 **Research workflow** | Variant comparison, Markdown/HTML/JSON reports, graph export, reproducible snapshots, a hypothesis workbench, and Reactome gene-list enrichment. |
 
-## Live demo vs. full app
+## Live app
 
-The **[GitHub Pages demo](https://redrogod69.github.io/PathwayGPS/)** is a static build. It ships real analyses recorded from the live databases for the demo variants: **EGFR L858R, BRAF V600E, KRAS G12C, TP53 R175H (`NM_000546.6:c.524G>A`), rs121434568, TP53 and HER2**, plus examples of invalid input. Paths, the Mechanism Tracer, comparison and the evidence assistant run in your browser.
-
-**Analysing any other variant** requires the FastAPI backend, which queries the public databases live. The same applies to node expansion, report export, snapshots and gene-list analysis. GitHub Pages cannot run a backend, so run it locally:
-
-## Deploy the full app (free)
-
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/redrogod69/PathwayGPS)
-
-1. Click **Deploy to Render** and sign in with GitHub. The `render.yaml` blueprint builds the `Dockerfile`, a single container serving the API and UI. On the free plan the service sleeps when idle, so the first request after a pause takes about a minute.
-2. Copy the service URL, e.g. `https://pathwaygps.onrender.com`. The full app already works at that address.
-3. To run the full app on **GitHub Pages** as well, go to *Settings → Secrets and variables → Actions → Variables* and add `PATHWAYGPS_API_URL` = that URL, then re-run the *Test & deploy* workflow. The Pages site will query the live backend, and falls back to the recorded demo if the backend is unreachable.
-
-Any Docker host (Fly.io, Railway, Hugging Face Spaces, a VM) works the same way: `docker build -t pathwaygps . && docker run -p 8000:8000 pathwaygps`.
+**https://redrogod69.github.io/PathwayGPS/** runs the full PathwayGPS pipeline in your browser. The Python backend runs under Pyodide and queries ClinVar, Ensembl VEP, UniProt, Reactome, IntAct, Open Targets, CIViC and PubMed live. No server is involved. The first load downloads the Python runtime (~10 MB).
 
 ## Run locally
 

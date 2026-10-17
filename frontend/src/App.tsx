@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Database, FlaskConical } from 'lucide-react';
-import { api, HOSTED_API, STATIC_DEMO } from './api';
+import { api, BROWSER_ENGINE, onEngineStatus } from './api';
 import type { Analysis } from './types';
 import AssistantModal from './components/AssistantModal';
 import { Navbar, PageHeader, Sidebar, ViewId } from './components/Shell';
@@ -38,8 +38,8 @@ export default function App() {
   const [evidenceFocus, setEvidenceFocus] = useState<{ id: string; n: number } | null>(null);
   const [recent, setRecent] = useState<string[]>(loadRecent);
   const reqId = useRef(0);
-  const [staticMode, setStaticMode] = useState(STATIC_DEMO);
-  useEffect(() => { const f = () => setStaticMode(true); window.addEventListener('pathwaygps:static-fallback', f); return () => window.removeEventListener('pathwaygps:static-fallback', f); }, []);
+  const [engineMsg, setEngineMsg] = useState('');
+  useEffect(() => onEngineStatus(setEngineMsg), []);
 
   const notify = useCallback((msg: string, tone: Toast['tone'] = 'ok') => {
     const id = Date.now() + Math.random();
@@ -111,6 +111,7 @@ export default function App() {
             </li>
           ))}
         </ol>
+        {engineMsg && <p className="mt-4 rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-3 py-2 text-xs text-cyan-200">{engineMsg}</p>}
         <p className="mt-4 text-xs text-slate-500">Live queries to public databases; a variant's first run can take 10–40 s, then it is cached. (Step list is indicative.)</p>
       </div>
     );
@@ -148,11 +149,9 @@ export default function App() {
         <Sidebar view={view} onSelect={setView} analysis={analysis} badges={badges} />
         <main className="min-w-0 flex-1 overflow-y-auto">
           <div className="mx-auto max-w-[1600px] px-4 py-6 md:px-6">
-            {staticMode && (
-              <div className="mb-4 rounded-xl border border-violet-500/30 bg-violet-500/10 px-4 py-2.5 text-xs text-violet-100">
-                <b>{HOSTED_API ? 'Live backend unreachable — showing the static demo.' : 'Static demo (GitHub Pages).'}</b> Showing real analyses recorded from ClinVar, Ensembl VEP, UniProt, Reactome, IntAct, Open Targets, CIViC and PubMed for the demo variants
-                ({examples.map((e) => e.label).join(', ')}). Paths, routes and the evidence assistant run in your browser. Live querying of any variant, node expansion, reports and snapshots need the local backend — see the{' '}
-                <a className="text-cyan-300 underline" href="https://github.com/redrogod69/PathwayGPS#run-locally" target="_blank" rel="noreferrer">README</a>.
+            {BROWSER_ENGINE && (
+              <div className="mb-4 rounded-xl border border-cyan-500/20 bg-cyan-500/5 px-4 py-2 text-[11px] text-slate-400">
+                Running entirely in your browser: the PathwayGPS Python pipeline executes locally (Pyodide) and queries ClinVar, Ensembl, UniProt, Reactome, Open Targets, CIViC and PubMed directly. No server, no data stored.
               </div>
             )}
             {health?.status === 'down' && (

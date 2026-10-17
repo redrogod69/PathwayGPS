@@ -1,31 +1,14 @@
 import type { Analysis, PathResult, Synthesis, Workbench } from './types';
-import { compareDiff, explainPath, kRoutes, retrievalChat } from './lib/staticEngine';
+import { call, onEngineStatus } from './lib/pyEngine';
 
-/** Static GitHub Pages build: no backend; recorded demo analyses are served from /demo. */
-const API_BASE: string = (import.meta.env.VITE_API_BASE ?? '').replace(/\/$/, '');
-const STATIC_BUILD = import.meta.env.VITE_STATIC === '1';
-/** True when this build has no reachable backend and is serving recorded demo data. */
-export let STATIC_DEMO = STATIC_BUILD && !API_BASE;
-export const HOSTED_API = API_BASE;
-const BASE = import.meta.env.BASE_URL;
-export const STATIC_NOTE = 'Not available in the static GitHub Pages demo — run PathwayGPS locally (see README) for live queries.';
-let demoIndex: Promise<any> | null = null;
-const demoCache = new Map<string, Analysis>();
-const loadIndex = () => (demoIndex ??= fetch(`${BASE}demo/index.json`).then((r) => r.json()));
-async function demoAnalyze(query: string): Promise<Analysis> {
-  const idx = await loadIndex();
-  const file = idx.queries[query.trim().replace(/\s+/g, ' ').toUpperCase()];
-  if (!file) throw new ApiError(404, `"${query}" is not one of the recorded demo analyses. Static demo variants: ${idx.examples.map((e: any) => e.label).join(', ')}. ${STATIC_NOTE}`);
-  if (!demoCache.has(file)) demoCache.set(file, await fetch(`${BASE}demo/${file}`).then((r) => r.json()));
-  return demoCache.get(file)!;
-}
-const byId = (id: string) => [...demoCache.values()].find((a) => a.analysis_id === id)!;
-const unavailable = async (): Promise<never> => { throw new ApiError(0, STATIC_NOTE); };
-async function eutils(path: string) {
-  const r = await fetch(`https://eutils.ncbi.nlm.nih.gov/entrez/eutils/${path}${path.includes('?') ? '&' : '?'}tool=PathwayGPS`);
-  if (!r.ok) throw new ApiError(r.status, 'PubMed unavailable');
-  return r;
-}
+/**
+ * Two runtimes, same Python pipeline:
+ *  - default: the FastAPI backend (local / Docker)
+ *  - VITE_ENGINE=browser (GitHub Pages): backend/app runs in the browser under Pyodide and
+ *    queries the public databases directly. No server and no recorded data.
+ */
+export const BROWSER_ENGINE = import.meta.env.VITE_ENGINE === 'browser';
+export { onEngineStatus };
 
 export class ApiError extends Error {
   status: number;
@@ -39,7 +22,7 @@ async function request<T>(url: string, init?: RequestInit, timeoutMs = 180_000):
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), timeoutMs);
   try {
-    const res = await fetch(url.startsWith('/api') ? API_BASE + url : url, { ...init, signal: ctrl.signal });
+    const res = await fetch(url, { ...init, signal: ctrl.signal });
     if (!res.ok) {
       let detail = `${res.status} ${res.statusText}`;
       try {
@@ -61,7 +44,7 @@ async function request<T>(url: string, init?: RequestInit, timeoutMs = 180_000):
 const json = (body: unknown): RequestInit => ({ method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
 
 async function download(url: string, body: unknown, fallbackName: string) {
-  const res = await fetch(API_BASE + url, body === undefined ? undefined : json(body));
+  const res = await fetch(url, body === undefined ? undefined : json(body));
   if (!res.ok) throw new ApiError(res.status, `Export failed (${res.status})`);
   const blob = await res.blob();
   const dispo = res.headers.get('Content-Disposition') || '';
@@ -98,7 +81,7 @@ const liveApi = {
   importSnapshot: (payload: unknown) => request<Analysis>('/api/snapshots/import', json(payload)),
   report: (id: string, format: 'md' | 'html' | 'json', workbench: Workbench) => download(`/api/analysis/${id}/report`, { format, workbench }, `PathwayGPS_report.${format}`),
   exportGraph: async (id: string, format: 'json' | 'cytoscape') => {
-    const res = await fetch(`${API_BASE}/api/analysis/${id}/export/graph?format=${format}`);
+    const res = await fetch(`/api/analysis/${id}/export/graph?format=${format}`);
     if (!res.ok) throw new ApiError(res.status, 'Export failed');
     const blob = await res.blob();
     const a = document.createElement('a');
@@ -108,65 +91,72 @@ const liveApi = {
   },
 };
 
-const staticApi: typeof liveApi = {
-  ...liveApi,
-  health: async () => ({ status: 'ok', mode: 'static_demo', ai: { enabled: false } }),
-  examples: async () => ({ examples: (await loadIndex()).examples }),
-  analyze: demoAnalyze,
-  expand: unavailable, synthesis: unavailable, enrichment: unavailable, snapshot: unavailable, loadSnapshot: unavailable,
-  snapshots: async () => ({ snapshots: [] }),
-  importSnapshot: async (payload: unknown) => payload as Analysis,
-  path: async (id, target, source) => {
-    const a = byId(id);
-    return explainPath(a, source ?? a.root_id!, target) ?? { found: false, source: a.root_id!, target, message: 'No connecting path exists in the retrieved graph. PathwayGPS does not invent one.' };
+function pyError(e: unknown): never {
+  const msg = String((e as Error)?.message ?? e);
+  const last = msg.trim().split('\n').filter(Boolean).pop() ?? msg;
+  const status = /KeyError/.test(last) ? 404 : /ValueError/.test(last) ? 400 : 0;
+  throw new ApiError(status, last.replace(/^\w+(Error|Exception): ?/, '').replace(/^'|'$/g, '') || 'Engine error');
+}
+const py = <T,>(expr: string, args: Record<string, unknown> = {}) => call<T>(expr, args).catch(pyError);
+const saveFile = (text: string, name: string, type: string) => {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], { type }));
+  a.download = name; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+};
+const SNAP_KEY = 'pathwaygps:snapshots';
+const readSnaps = (): any[] => { try { return JSON.parse(localStorage.getItem(SNAP_KEY) || '[]'); } catch { return []; } };
+const fname = (q: string) => `PathwayGPS_${q.replace(/[^A-Za-z0-9._-]+/g, '_')}`;
+
+const browserApi: typeof liveApi = {
+  health: async () => ({ status: 'ok', mode: 'browser', ai: { enabled: false } }),
+  examples: async () => ({ examples: [
+    { query: 'EGFR L858R', label: 'EGFR L858R', note: 'NSCLC sensitizing' },
+    { query: 'BRAF V600E', label: 'BRAF V600E', note: 'Conflicting germline · Tier I' },
+    { query: 'KRAS G12C', label: 'KRAS G12C', note: '2 nucleotide records' },
+    { query: 'NM_000546.6:c.524G>A', label: 'TP53 R175H', note: 'Transcript HGVS' },
+    { query: 'rs121434568', label: 'rs121434568', note: 'Multi-allelic rsID' },
+    { query: 'TP53', label: 'TP53', note: 'Gene-level only' },
+  ] }),
+  analyze: (query) => py<Analysis>('service.analyze(_a["q"])', { q: query }),
+  expand: (id, node_id, action) => py('service.expand(_a["id"], _a["n"], _a["act"])', { id, n: node_id, act: action }),
+  path: (id, target, source) => py<PathResult>('service.path(_a["id"], _a["t"], _a.get("s"))', { id, t: target, s: source ?? null }),
+  routes: (id, target, k = 3) => py('service.routes(_a["id"], _a["t"], _a["k"])', { id, t: target, k }),
+  chat: (id, messages) => py('service.chat(_a["id"], _a["m"])', { id, m: messages }),
+  synthesis: (id) => py('service.synthesize_ai(_a["id"])', { id }),
+  abstract: (pmid) => py('service.abstract(_a["p"])', { p: pmid }),
+  literature: (q) => py('service.literature_search(_a["q"])', { q }),
+  compare: (a, b) => py('service.compare(_a["a"], _a["b"])', { a, b }),
+  enrichment: (identifiers) => py('service.enrichment(_a["ids"])', { ids: identifiers }),
+  snapshot: async (id, workbench) => {
+    const payload = await py<any>('service.get(_a["id"])', { id });
+    const snap = { id: Math.random().toString(16).slice(2, 14), saved_at: new Date().toISOString(), original_analysis_id: id, original_created_at: payload.created_at, workbench,
+      statement: 'Frozen copy of the analysis as retrieved; external data are not refreshed. Re-run the query to compare with current source data.' };
+    const list = readSnaps();
+    list.unshift({ ...payload, snapshot: snap });
+    try { localStorage.setItem(SNAP_KEY, JSON.stringify(list.slice(0, 8))); } catch { throw new ApiError(0, 'Browser storage is full; export the analysis as JSON instead.'); }
+    return snap;
   },
-  routes: async (id, target, k = 3) => {
-    const a = byId(id);
-    const routes = kRoutes(a, a.root_id!, target, k) as any;
-    return { source: a.root_id!, target, routes, message: routes.length ? undefined : 'No connecting route exists in the retrieved graph.', ranking: 'Fewest steps first, then strongest evidence category, then most supporting records. Not a probability.' };
+  snapshots: async () => ({ snapshots: readSnaps().map((p) => ({ id: p.snapshot.id, query: p.query, saved_at: p.snapshot.saved_at, original_created_at: p.snapshot.original_created_at, status: p.resolution?.status })) }),
+  loadSnapshot: async (id) => {
+    const p = readSnaps().find((x) => x.snapshot.id === id);
+    if (!p) throw new ApiError(404, 'Snapshot not found in this browser.');
+    return py<Analysis>('service.register_snapshot(_a["p"])', { p });
   },
-  chat: async (id, messages) => retrievalChat(byId(id), messages[messages.length - 1].content),
-  compare: async (a, b) => {
-    const [pa, pb] = await Promise.all([demoAnalyze(a), demoAnalyze(b)]);
-    return { a: pa, b: pb, diff: compareDiff(pa, pb), note: 'Pathway overlap compares all Reactome pathways retrieved for each protein. Shared pathways do not imply the variants have the same effect.' };
+  importSnapshot: (payload) => py<Analysis>('service.register_snapshot(_a["p"])', { p: payload }),
+  report: async (id, format, workbench) => {
+    const payload = await py<any>('service.get(_a["id"])', { id });
+    if (format === 'json') return saveFile(JSON.stringify({ ...payload, workbench }, null, 2), `${fname(payload.query)}.json`, 'application/json');
+    const text = await py<string>(format === 'html' ? 'to_html(build_blocks(service.get(_a["id"]), _a["w"]), "PathwayGPS report")' : 'to_markdown(build_blocks(service.get(_a["id"]), _a["w"]))', { id, w: workbench });
+    saveFile(text, `${fname(payload.query)}.${format}`, format === 'html' ? 'text/html' : 'text/markdown');
   },
-  abstract: async (pmid) => {
-    const xml = await (await eutils(`efetch.fcgi?db=pubmed&id=${pmid}&retmode=xml&rettype=abstract`)).text();
-    const doc = new DOMParser().parseFromString(xml, 'text/xml');
-    return { pmid, title: doc.querySelector('ArticleTitle')?.textContent ?? undefined, url: `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`, mesh: [], pubtypes: [],
-      copyright: doc.querySelector('CopyrightInformation')?.textContent ?? undefined,
-      sections: [...doc.querySelectorAll('AbstractText')].map((n) => ({ label: n.getAttribute('Label') ?? undefined, text: n.textContent ?? '' })) };
-  },
-  literature: async (q) => {
-    const s = await (await eutils(`esearch.fcgi?db=pubmed&retmode=json&retmax=15&sort=relevance&term=${encodeURIComponent(q)}`)).json();
-    const ids: string[] = s.esearchresult?.idlist ?? [];
-    const sum = ids.length ? await (await eutils(`esummary.fcgi?db=pubmed&retmode=json&id=${ids.join(',')}`)).json() : { result: {} };
-    return { query: q, count: Number(s.esearchresult?.count ?? 0), note: 'Keyword search results: co-mention of terms in PubMed, not evidence for any specific relationship.',
-      results: ids.map((id) => sum.result[id]).filter(Boolean).map((r: any) => ({ pmid: r.uid, title: r.title, journal: r.source, year: (r.pubdate ?? '').slice(0, 4), authors: (r.authors ?? []).slice(0, 3).map((x: any) => x.name), url: `https://pubmed.ncbi.nlm.nih.gov/${r.uid}/` })) };
-  },
-  report: unavailable, exportGraph: async (id) => {
-    const a = byId(id);
-    const url = URL.createObjectURL(new Blob([JSON.stringify({ query: a.query, retrieved: a.created_at, root_id: a.root_id, ...a.graph, sources: a.sources }, null, 2)], { type: 'application/json' }));
-    const el = document.createElement('a'); el.href = url; el.download = `PathwayGPS_${a.query.replace(/\W+/g, '_')}_graph.json`; el.click();
+  exportGraph: async (id, format) => {
+    const p = await py<any>('service.get(_a["id"])', { id });
+    const body = format === 'cytoscape'
+      ? { format_version: '1.0', generated_by: 'PathwayGPS', elements: { nodes: p.graph.nodes.map((n: any) => ({ data: { ...n, attributes: undefined } })), edges: p.graph.edges.map((e: any) => ({ data: e })) }, evidence: p.graph.evidence }
+      : { query: p.query, retrieved: p.created_at, root_id: p.root_id, ...p.graph, sources: p.sources };
+    saveFile(JSON.stringify(body, null, 2), `${fname(p.query)}_graph.json`, 'application/json');
   },
 };
 
-/** Hosted static build with a backend URL: use the live API, and fall back to the recorded demo if it is unreachable. */
-function withFallback(): typeof liveApi {
-  const out: any = {};
-  for (const key of Object.keys(liveApi) as (keyof typeof liveApi)[]) {
-    out[key] = async (...args: any[]) => {
-      if (!STATIC_DEMO) {
-        try { return await (liveApi[key] as any)(...args); } catch (e) {
-          if (!(e instanceof ApiError) || e.status !== 0 || key === 'chat' || key === 'routes' || key === 'path' || key === 'expand') throw e;
-          STATIC_DEMO = true;
-          window.dispatchEvent(new Event('pathwaygps:static-fallback'));
-        }
-      }
-      return (staticApi[key] as any)(...args);
-    };
-  }
-  return out;
-}
-
-export const api: typeof liveApi = STATIC_BUILD ? (API_BASE ? withFallback() : staticApi) : liveApi;
+export const api: typeof liveApi = BROWSER_ENGINE ? browserApi : liveApi;
