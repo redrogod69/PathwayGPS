@@ -1,0 +1,1 @@
+{"url": "https://rest.ensembl.org/lookup/symbol/homo_sapiens/ZZZFAKEGENE?content-type=application%2Fjson", "status": 400, "fetched_at": "2026-10-17T10:40:18+00:00", "body": "{\"error\":\"No valid lookup found for symbol ZZZFAKEGENE\"}"}

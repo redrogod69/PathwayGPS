@@ -1,0 +1,19 @@
+f60d7b2 Initial commit
+--- STATUS ---
+ M README.md
+?? .env.example
+?? .gitignore
+?? backend/
+?? data/
+?? docker-compose.yml
+?? docs/
+?? etl/
+?? frontend/
+?? graph/
+?? requirements.txt
+?? verification/
+--- DIFF STAT SINCE LAST 10 ---
+ README.md | 78 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 77 insertions(+), 1 deletion(-)
+--- TREE ---
+README.md

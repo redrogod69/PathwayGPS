@@ -1,0 +1,230 @@
+{
+  "genes": [
+    {
+      "gene_symbol": "EGFR",
+      "canonical_id": "gene:ENSG00000146648",
+      "protein_accession": "P00533",
+      "protein_name": "Epidermal growth factor receptor",
+      "genome_build": "GRCh38",
+      "source": "official",
+      "downloaded_at": "2026-09-16T17:24:33.379378+00:00"
+    },
+    {
+      "gene_symbol": "KRAS",
+      "canonical_id": "gene:ENSG00000133703",
+      "protein_accession": "P01116",
+      "protein_name": "GTPase KRas",
+      "genome_build": "GRCh38",
+      "source": "official",
+      "downloaded_at": "2026-09-16T17:24:40.661919+00:00"
+    },
+    {
+      "gene_symbol": "BRAF",
+      "canonical_id": "gene:ENSG00000157764",
+      "protein_accession": "P15056",
+      "protein_name": "Serine/threonine-protein kinase B-raf",
+      "genome_build": "GRCh38",
+      "source": "official",
+      "downloaded_at": "2026-09-16T17:24:53.606912+00:00"
+    },
+    {
+      "gene_symbol": "MAP2K1",
+      "canonical_id": "gene:ENSG00000169032",
+      "protein_accession": "Q02750",
+      "protein_name": "Dual specificity mitogen-activated protein kinase kinase 1",
+      "genome_build": "GRCh38",
+      "source": "official",
+      "downloaded_at": "2026-09-16T17:25:05.101127+00:00"
+    },
+    {
+      "gene_symbol": "MAPK1",
+      "canonical_id": "gene:ENSG00000100030",
+      "protein_accession": "P28482",
+      "protein_name": "Mitogen-activated protein kinase 1",
+      "genome_build": "GRCh38",
+      "source": "official",
+      "downloaded_at": "2026-09-16T17:25:12.906210+00:00"
+    },
+    {
+      "gene_symbol": "AKT1",
+      "canonical_id": "gene:ENSG00000142208",
+      "protein_accession": "P31749",
+      "protein_name": "RAC-alpha serine/threonine-protein kinase",
+      "genome_build": "GRCh38",
+      "source": "official",
+      "downloaded_at": "2026-09-16T17:25:22.118327+00:00"
+    },
+    {
+      "gene_symbol": "PTEN",
+      "canonical_id": "gene:ENSG00000171862",
+      "protein_accession": "P60484",
+      "protein_name": "Phosphatidylinositol 3,4,5-trisphosphate 3-phosphatase and dual-specificity protein phosphatase PTEN",
+      "genome_build": "GRCh38",
+      "source": "official",
+      "downloaded_at": "2026-09-16T17:25:25.668457+00:00"
+    }
+  ],
+  "variants": [
+    {
+      "gene_symbol": "EGFR",
+      "variant_id": "VCV000016609",
+      "protein_change": "p.L858R",
+      "source_database": "ClinVar",
+      "source_id": "16609",
+      "clinical_significance": "source_recorded",
+      "downloaded_at": "2026-09-16T17:24:36.666387+00:00",
+      "title": "NM_005228.5(EGFR):c.2573T>G (p.Leu858Arg)"
+    },
+    {
+      "gene_symbol": "EGFR",
+      "variant_id": "VCV000016613",
+      "protein_change": "p.T790M",
+      "source_database": "ClinVar",
+      "source_id": "16613",
+      "clinical_significance": "source_recorded",
+      "downloaded_at": "2026-09-16T17:24:38.613082+00:00",
+      "title": "NM_005228.5(EGFR):c.2369C>T (p.Thr790Met)"
+    },
+    {
+      "gene_symbol": "KRAS",
+      "variant_id": "VCV000012582",
+      "protein_change": "p.G12D",
+      "source_database": "ClinVar",
+      "source_id": "12582",
+      "clinical_significance": "source_recorded",
+      "downloaded_at": "2026-09-16T17:24:43.425532+00:00",
+      "title": "NM_004985.5(KRAS):c.35G>A (p.Gly12Asp)"
+    },
+    {
+      "gene_symbol": "KRAS",
+      "variant_id": "VCV001701193",
+      "protein_change": "p.G12C",
+      "source_database": "ClinVar",
+      "source_id": "1701193",
+      "clinical_significance": "source_recorded",
+      "downloaded_at": "2026-09-16T17:24:45.300627+00:00",
+      "title": "NM_004985.5(KRAS):c.33_34delinsCT (p.Gly12Cys)"
+    },
+    {
+      "gene_symbol": "BRAF",
+      "variant_id": "VCV000013961",
+      "protein_change": "p.V600E",
+      "source_database": "ClinVar",
+      "source_id": "13961",
+      "clinical_significance": "source_recorded",
+      "downloaded_at": "2026-09-16T17:24:57.555002+00:00",
+      "title": "NM_004333.6(BRAF):c.1799T>A (p.Val600Glu)"
+    },
+    {
+      "gene_symbol": "PTEN",
+      "variant_id": "VCV000007829",
+      "protein_change": "p.R130Q",
+      "source_database": "ClinVar",
+      "source_id": "7829",
+      "clinical_significance": "source_recorded",
+      "downloaded_at": "2026-09-16T17:25:28.893100+00:00",
+      "title": "NM_000314.8(PTEN):c.389G>A (p.Arg130Gln)"
+    }
+  ],
+  "relationships": [
+    {
+      "source": "EGFR",
+      "target": "P00533",
+      "relationship": "ENCODES",
+      "source_database": "UniProt",
+      "source_id": "P00533"
+    },
+    {
+      "source": "P00533",
+      "target": "R-HSA-9612973",
+      "relationship": "PARTICIPATES_IN",
+      "source_database": "Reactome",
+      "source_id": "R-HSA-9612973",
+      "evidence": "Curated pathway relationship"
+    },
+    {
+      "source": "P00533",
+      "target": "R-HSA-1640170",
+      "relationship": "PARTICIPATES_IN",
+      "source_database": "Reactome",
+      "source_id": "R-HSA-1640170",
+      "evidence": "Curated pathway relationship"
+    },
+    {
+      "source": "P00533",
+      "target": "R-HSA-1500931",
+      "relationship": "PARTICIPATES_IN",
+      "source_database": "Reactome",
+      "source_id": "R-HSA-1500931",
+      "evidence": "Curated pathway relationship"
+    },
+    {
+      "source": "KRAS",
+      "target": "P01116",
+      "relationship": "ENCODES",
+      "source_database": "UniProt",
+      "source_id": "P01116"
+    },
+    {
+      "source": "BRAF",
+      "target": "P15056",
+      "relationship": "ENCODES",
+      "source_database": "UniProt",
+      "source_id": "P15056"
+    },
+    {
+      "source": "MAP2K1",
+      "target": "Q02750",
+      "relationship": "ENCODES",
+      "source_database": "UniProt",
+      "source_id": "Q02750"
+    },
+    {
+      "source": "MAPK1",
+      "target": "P28482",
+      "relationship": "ENCODES",
+      "source_database": "UniProt",
+      "source_id": "P28482"
+    },
+    {
+      "source": "AKT1",
+      "target": "P31749",
+      "relationship": "ENCODES",
+      "source_database": "UniProt",
+      "source_id": "P31749"
+    },
+    {
+      "source": "PTEN",
+      "target": "P60484",
+      "relationship": "ENCODES",
+      "source_database": "UniProt",
+      "source_id": "P60484"
+    }
+  ],
+  "sources": {
+    "reactome": {
+      "source_url": "https://reactome.org/ContentService/data/pathways/top/9606",
+      "version": "live",
+      "downloaded_at": "2026-09-16T17:25:28.893130+00:00",
+      "license": "Reactome terms of use"
+    },
+    "uniprot": {
+      "source_url": "https://rest.uniprot.org/",
+      "version": "live",
+      "downloaded_at": "2026-09-16T17:25:28.893136+00:00",
+      "license": "UniProt terms"
+    },
+    "ensembl": {
+      "source_url": "https://rest.ensembl.org/",
+      "version": "live",
+      "downloaded_at": "2026-09-16T17:25:28.893140+00:00",
+      "license": "Ensembl terms"
+    },
+    "clinvar": {
+      "source_url": "https://www.ncbi.nlm.nih.gov/clinvar/",
+      "version": "live",
+      "downloaded_at": "2026-09-16T17:25:28.893144+00:00",
+      "license": "NCBI terms"
+    }
+  }
+}

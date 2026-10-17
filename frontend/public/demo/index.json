@@ -1,0 +1,54 @@
+{
+ "generated_from": "recorded replay fixtures",
+ "queries": {
+  "EGFR L858R": "EGFR_L858R.json",
+  "VCV000016609": "EGFR_L858R.json",
+  "RS121434568": "rs121434568.json",
+  "BRAF V600E": "BRAF_V600E.json",
+  "VCV000013961": "BRAF_V600E.json",
+  "RS113488022": "BRAF_V600E.json",
+  "KRAS G12C": "KRAS_G12C.json",
+  "VCV000012578": "KRAS_G12C.json",
+  "RS121913530": "KRAS_G12C.json",
+  "NM_000546.6:C.524G>A": "NM_000546_6_c_524G_A.json",
+  "VCV000012374": "NM_000546_6_c_524G_A.json",
+  "RS28934578": "NM_000546_6_c_524G_A.json",
+  "TP53": "TP53.json",
+  "HER2": "HER2.json",
+  "L858R": "L858R.json",
+  "EGFR L859R": "EGFR_L859R.json",
+  "ZZZFAKEGENE L858R": "ZZZFAKEGENE_L858R.json"
+ },
+ "examples": [
+  {
+   "query": "EGFR L858R",
+   "label": "EGFR L858R",
+   "note": "NSCLC sensitizing"
+  },
+  {
+   "query": "BRAF V600E",
+   "label": "BRAF V600E",
+   "note": "Conflicting germline \u00b7 Tier I"
+  },
+  {
+   "query": "KRAS G12C",
+   "label": "KRAS G12C",
+   "note": "2 nucleotide records"
+  },
+  {
+   "query": "NM_000546.6:c.524G>A",
+   "label": "TP53 R175H",
+   "note": "Transcript HGVS"
+  },
+  {
+   "query": "rs121434568",
+   "label": "rs121434568",
+   "note": "Multi-allelic rsID"
+  },
+  {
+   "query": "TP53",
+   "label": "TP53",
+   "note": "Gene-level only"
+  }
+ ]
+}

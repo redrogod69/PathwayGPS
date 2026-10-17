@@ -1,0 +1,352 @@
+{
+  "nodes": [
+    {
+      "id": "variant-egfr-l858r",
+      "name": "EGFR L858R",
+      "type": "variant",
+      "description": "Activating EGFR kinase-domain mutation present in a prototype lung cancer pathway graph.",
+      "classification": "user_input",
+      "provenance": {
+        "source_database": "user_input",
+        "source_id": "EGFR_L858R",
+        "relationship": "user-specified variant",
+        "evidence": "User supplied request for the initial PathwayGPS demo path.",
+        "version": "seed-data-v1",
+        "download_date": "2026-09-16",
+        "classification": "user_input"
+      }
+    },
+    {
+      "id": "gene-egfr",
+      "name": "EGFR",
+      "type": "gene",
+      "description": "Epidermal growth factor receptor gene.",
+      "classification": "manual_seed_data",
+      "provenance": {
+        "source_database": "PathwayGPS seed dataset",
+        "source_id": "seed:gene:EGFR",
+        "relationship": "gene_identity",
+        "evidence": "Included in the human-curated demo graph to anchor the EGFR L858R example.",
+        "version": "seed-data-v1",
+        "download_date": "2026-09-16",
+        "classification": "manual_seed_data"
+      }
+    },
+    {
+      "id": "protein-egfr",
+      "name": "EGFR protein",
+      "type": "protein",
+      "description": "EGFR receptor protein activated in the receptor tyrosine kinase signaling axis.",
+      "classification": "manual_seed_data",
+      "provenance": {
+        "source_database": "PathwayGPS seed dataset",
+        "source_id": "seed:protein:EGFR",
+        "relationship": "protein_identity",
+        "evidence": "Prototype seed dataset connecting the EGFR gene to its receptor protein.",
+        "version": "seed-data-v1",
+        "download_date": "2026-09-16",
+        "classification": "manual_seed_data"
+      }
+    },
+    {
+      "id": "pathway-egfr-mapk",
+      "name": "RAS-MAPK signaling",
+      "type": "pathway",
+      "description": "Canonical pathway linking receptor activation to downstream MAPK signaling.",
+      "classification": "manual_seed_data",
+      "provenance": {
+        "source_database": "PathwayGPS seed dataset",
+        "source_id": "seed:pathway:EGFR_MAPK",
+        "relationship": "pathway_membership",
+        "evidence": "Included in the demo graph to show downstream biological signaling flow.",
+        "version": "seed-data-v1",
+        "download_date": "2026-09-16",
+        "classification": "manual_seed_data"
+      }
+    },
+    {
+      "id": "protein-ras",
+      "name": "RAS",
+      "type": "protein",
+      "description": "Small GTPase signaling node downstream of receptor activation.",
+      "classification": "manual_seed_data",
+      "provenance": {
+        "source_database": "PathwayGPS seed dataset",
+        "source_id": "seed:protein:RAS",
+        "relationship": "signal_transduction",
+        "evidence": "Part of the prototype EGFR signaling chain used for research visualization.",
+        "version": "seed-data-v1",
+        "download_date": "2026-09-16",
+        "classification": "manual_seed_data"
+      }
+    },
+    {
+      "id": "protein-raf",
+      "name": "RAF",
+      "type": "protein",
+      "description": "MAP kinase kinase kinase downstream of RAS in the canonical signaling cascade.",
+      "classification": "manual_seed_data",
+      "provenance": {
+        "source_database": "PathwayGPS seed dataset",
+        "source_id": "seed:protein:RAF",
+        "relationship": "signal_transduction",
+        "evidence": "Prototype graph step in the EGFR-to-MAPK pathway demonstration.",
+        "version": "seed-data-v1",
+        "download_date": "2026-09-16",
+        "classification": "manual_seed_data"
+      }
+    },
+    {
+      "id": "protein-mek",
+      "name": "MEK",
+      "type": "protein",
+      "description": "MAP kinase kinase in the receptor-to-nucleus signaling cascade.",
+      "classification": "manual_seed_data",
+      "provenance": {
+        "source_database": "PathwayGPS seed dataset",
+        "source_id": "seed:protein:MEK",
+        "relationship": "signal_transduction",
+        "evidence": "Prototype graph step in the EGFR signaling chain.",
+        "version": "seed-data-v1",
+        "download_date": "2026-09-16",
+        "classification": "manual_seed_data"
+      }
+    },
+    {
+      "id": "protein-erk",
+      "name": "ERK",
+      "type": "protein",
+      "description": "MAP kinase downstream of MEK controlling transcriptional programs and proliferation.",
+      "classification": "manual_seed_data",
+      "provenance": {
+        "source_database": "PathwayGPS seed dataset",
+        "source_id": "seed:protein:ERK",
+        "relationship": "signal_transduction",
+        "evidence": "Prototype graph step in the EGFR signaling chain.",
+        "version": "seed-data-v1",
+        "download_date": "2026-09-16",
+        "classification": "manual_seed_data"
+      }
+    },
+    {
+      "id": "effect-cell-proliferation",
+      "name": "Cell proliferation",
+      "type": "effect",
+      "description": "Downstream phenotype associated with persistent MAPK signaling activity.",
+      "classification": "manual_seed_data",
+      "provenance": {
+        "source_database": "PathwayGPS seed dataset",
+        "source_id": "seed:effect:cell_proliferation",
+        "relationship": "biological_effect",
+        "evidence": "Prototype effect included to demonstrate the chain from variant to phenotype.",
+        "version": "seed-data-v1",
+        "download_date": "2026-09-16",
+        "classification": "manual_seed_data"
+      }
+    },
+    {
+      "id": "drug-osimertinib",
+      "name": "Osimertinib",
+      "type": "drug",
+      "description": "Third-generation EGFR inhibitor considered in a demo treatment prioritization workflow.",
+      "classification": "manual_seed_data",
+      "provenance": {
+        "source_database": "PathwayGPS seed dataset",
+        "source_id": "seed:drug:osimertinib",
+        "relationship": "candidate_treatment",
+        "evidence": "Used as a demonstration candidate drug in the prototype UI and not as a clinical recommendation.",
+        "version": "seed-data-v1",
+        "download_date": "2026-09-16",
+        "classification": "manual_seed_data"
+      }
+    },
+    {
+      "id": "drug-erlotinib",
+      "name": "Erlotinib",
+      "type": "drug",
+      "description": "EGFR-targeting kinase inhibitor used in the example treatment list for demo purposes.",
+      "classification": "manual_seed_data",
+      "provenance": {
+        "source_database": "PathwayGPS seed dataset",
+        "source_id": "seed:drug:erlotinib",
+        "relationship": "candidate_treatment",
+        "evidence": "Demo-only drug candidate used to show evidence prioritization in the UI.",
+        "version": "seed-data-v1",
+        "download_date": "2026-09-16",
+        "classification": "manual_seed_data"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-variant-gene",
+      "source": "variant-egfr-l858r",
+      "target": "gene-egfr",
+      "relationship": "is_variant_of",
+      "description": "The demo variant is assigned to the EGFR gene.",
+      "classification": "manual_seed_data",
+      "provenance": {
+        "source_database": "PathwayGPS seed dataset",
+        "source_id": "seed:egfr-l858r-1",
+        "relationship": "is_variant_of",
+        "evidence": "Human-curated prototype seed graph linking the demo variant to its gene.",
+        "version": "seed-data-v1",
+        "download_date": "2026-09-16",
+        "classification": "manual_seed_data"
+      }
+    },
+    {
+      "id": "edge-gene-protein",
+      "source": "gene-egfr",
+      "target": "protein-egfr",
+      "relationship": "encodes",
+      "description": "EGFR gene encodes the EGFR receptor protein.",
+      "classification": "manual_seed_data",
+      "provenance": {
+        "source_database": "PathwayGPS seed dataset",
+        "source_id": "seed:gene-egfr-protein",
+        "relationship": "encodes",
+        "evidence": "Seed dataset relationship used to anchor the receptor-component chain.",
+        "version": "seed-data-v1",
+        "download_date": "2026-09-16",
+        "classification": "manual_seed_data"
+      }
+    },
+    {
+      "id": "edge-protein-pathway",
+      "source": "protein-egfr",
+      "target": "pathway-egfr-mapk",
+      "relationship": "activates_pathway",
+      "description": "EGFR receptor activity feeds into the RAS-MAPK signaling pathway.",
+      "classification": "manual_seed_data",
+      "provenance": {
+        "source_database": "PathwayGPS seed dataset",
+        "source_id": "seed:egfr-pathway",
+        "relationship": "activates_pathway",
+        "evidence": "Prototype path used to show the immediate biological signaling context for the variant.",
+        "version": "seed-data-v1",
+        "download_date": "2026-09-16",
+        "classification": "manual_seed_data"
+      }
+    },
+    {
+      "id": "edge-pathway-ras",
+      "source": "pathway-egfr-mapk",
+      "target": "protein-ras",
+      "relationship": "includes_protein",
+      "description": "RAS is represented as a node in the EGFR-MAPK signaling pathway.",
+      "classification": "manual_seed_data",
+      "provenance": {
+        "source_database": "PathwayGPS seed dataset",
+        "source_id": "seed:pathway-ras",
+        "relationship": "includes_protein",
+        "evidence": "Prototype dataset supports the minimal receptor-to-MAPK chain for the dashboard demonstration.",
+        "version": "seed-data-v1",
+        "download_date": "2026-09-16",
+        "classification": "manual_seed_data"
+      }
+    },
+    {
+      "id": "edge-ras-raf",
+      "source": "protein-ras",
+      "target": "protein-raf",
+      "relationship": "activates",
+      "description": "RAS activates RAF within the canonical MAPK axis.",
+      "classification": "manual_seed_data",
+      "provenance": {
+        "source_database": "PathwayGPS seed dataset",
+        "source_id": "seed:ras-raf",
+        "relationship": "activates",
+        "evidence": "Prototype graph pathway step used for the minimal EGFR signal cascade.",
+        "version": "seed-data-v1",
+        "download_date": "2026-09-16",
+        "classification": "manual_seed_data"
+      }
+    },
+    {
+      "id": "edge-raf-mek",
+      "source": "protein-raf",
+      "target": "protein-mek",
+      "relationship": "activates",
+      "description": "RAF activates MEK in the kinase cascade.",
+      "classification": "manual_seed_data",
+      "provenance": {
+        "source_database": "PathwayGPS seed dataset",
+        "source_id": "seed:raf-mek",
+        "relationship": "activates",
+        "evidence": "Prototype map of the EGFR downstream signaling chain.",
+        "version": "seed-data-v1",
+        "download_date": "2026-09-16",
+        "classification": "manual_seed_data"
+      }
+    },
+    {
+      "id": "edge-mek-erk",
+      "source": "protein-mek",
+      "target": "protein-erk",
+      "relationship": "activates",
+      "description": "MEK activates ERK as part of the MAPK signaling cascade.",
+      "classification": "manual_seed_data",
+      "provenance": {
+        "source_database": "PathwayGPS seed dataset",
+        "source_id": "seed:mek-erk",
+        "relationship": "activates",
+        "evidence": "Prototype graph step in the downstream signaling flow.",
+        "version": "seed-data-v1",
+        "download_date": "2026-09-16",
+        "classification": "manual_seed_data"
+      }
+    },
+    {
+      "id": "edge-erk-effect",
+      "source": "protein-erk",
+      "target": "effect-cell-proliferation",
+      "relationship": "drives",
+      "description": "ERK signaling is associated with increased cell proliferation in the demo graph.",
+      "classification": "manual_seed_data",
+      "provenance": {
+        "source_database": "PathwayGPS seed dataset",
+        "source_id": "seed:erk-cell-proliferation",
+        "relationship": "drives",
+        "evidence": "Used as a demonstration downstream effect for the proof-of-concept dashboard.",
+        "version": "seed-data-v1",
+        "download_date": "2026-09-16",
+        "classification": "manual_seed_data"
+      }
+    },
+    {
+      "id": "edge-receptor-osimertinib",
+      "source": "protein-egfr",
+      "target": "drug-osimertinib",
+      "relationship": "candidate_treatment",
+      "description": "Demo candidate treatment attached to the receptor.",
+      "classification": "manual_seed_data",
+      "provenance": {
+        "source_database": "PathwayGPS seed dataset",
+        "source_id": "seed:egfr-osimertinib",
+        "relationship": "candidate_treatment",
+        "evidence": "Demo-only treatment recommendation shown for UI prioritization and not a clinical suggestion.",
+        "version": "seed-data-v1",
+        "download_date": "2026-09-16",
+        "classification": "manual_seed_data"
+      }
+    },
+    {
+      "id": "edge-receptor-erlotinib",
+      "source": "protein-egfr",
+      "target": "drug-erlotinib",
+      "relationship": "candidate_treatment",
+      "description": "Secondary demo curation for treatment prioritization.",
+      "classification": "manual_seed_data",
+      "provenance": {
+        "source_database": "PathwayGPS seed dataset",
+        "source_id": "seed:egfr-erlotinib",
+        "relationship": "candidate_treatment",
+        "evidence": "Demo-only treatment candidate included to illustrate evidence ranking in the prototype interface.",
+        "version": "seed-data-v1",
+        "download_date": "2026-09-16",
+        "classification": "manual_seed_data"
+      }
+    }
+  ]
+}

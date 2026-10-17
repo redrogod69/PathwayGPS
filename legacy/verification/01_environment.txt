@@ -1,0 +1,13 @@
+PYTHON:
+Python 3.9.6
+/usr/bin/python3
+PIP FREEZE:
+/bin/bash: line 2: pip: command not found
+NODE:
+v26.8.2
+11.19.1
+DOCKER:
+/bin/bash: line 4: docker: command not found
+/bin/bash: line 4: docker: command not found
+NEO4J PORT:
+7687 CLOSED

@@ -1,0 +1,2 @@
+# Optional: grounded AI synthesis (server-side). Requires ANTHROPIC_API_KEY in .env.
+anthropic

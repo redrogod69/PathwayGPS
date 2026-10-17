@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+.venv*
+.env
+
+# Node
+frontend/node_modules/
+frontend/dist/
+
+# Editor
+.DS_Store
+.vscode/
+frontend/vite.config.js
+frontend/vite.config.d.ts
+frontend/*.tsbuildinfo
+data/cache/
+data/snapshots/
+.pytest_cache/
+frontend/dist-pages/
+backend/.pytest_cache/
+**/__pycache__/
+.claude/

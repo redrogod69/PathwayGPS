@@ -1,0 +1,26 @@
+{
+  "reactome": {
+    "source_url": "https://reactome.org/ContentService/data/pathways/top/9606",
+    "version": "live",
+    "downloaded_at": "2026-09-16T16:41:30.317374+00:00",
+    "license": "Reactome terms of use"
+  },
+  "uniprot": {
+    "source_url": "https://rest.uniprot.org/",
+    "version": "live",
+    "downloaded_at": "2026-09-16T16:41:30.317377+00:00",
+    "license": "UniProt terms"
+  },
+  "ensembl": {
+    "source_url": "https://rest.ensembl.org/",
+    "version": "live",
+    "downloaded_at": "2026-09-16T16:41:30.317380+00:00",
+    "license": "Ensembl terms"
+  },
+  "clinvar": {
+    "source_url": "https://www.ncbi.nlm.nih.gov/clinvar/",
+    "version": "live",
+    "downloaded_at": "2026-09-16T16:41:30.317382+00:00",
+    "license": "NCBI terms"
+  }
+}

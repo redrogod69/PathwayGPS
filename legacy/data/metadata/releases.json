@@ -1,0 +1,7 @@
+{
+  "reactome": "live",
+  "uniprot": "live",
+  "ensembl": "live",
+  "genome_build": "GRCh38",
+  "clinvar": "live"
+}

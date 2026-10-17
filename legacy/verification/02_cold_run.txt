@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/Users/redrogod/Documents/PathwayGPS/copilot-worktrees/PathwayGPS/redrogod69-miniature-waffle/etl/run_pipeline.py", line 13, in <module>
+    from app.services.real_pipeline import RealDataPipeline
+  File "/Users/redrogod/Documents/PathwayGPS/copilot-worktrees/PathwayGPS/redrogod69-miniature-waffle/backend/app/services/real_pipeline.py", line 8, in <module>
+    from app.services.clinvar_service import ClinVarService
+  File "/Users/redrogod/Documents/PathwayGPS/copilot-worktrees/PathwayGPS/redrogod69-miniature-waffle/backend/app/services/clinvar_service.py", line 9, in <module>
+    import httpx
+ModuleNotFoundError: No module named 'httpx'

@@ -1,0 +1,6 @@
+EGFR L858R -> ['pathway:R-HSA-8864260', 'pathway:R-HSA-8866910', 'pathway:R-HSA-9927432']
+BRAF V600E -> ['pathway:R-HSA-187706', 'pathway:R-HSA-5674499', 'pathway:R-HSA-9726840']
+KRAS G12D -> ['pathway:R-HSA-6802949', 'pathway:R-HSA-6802955', 'pathway:R-HSA-9648002']
+EGFR L858R vs BRAF V600E: identical=False overlap=[]
+EGFR L858R vs KRAS G12D: identical=False overlap=[]
+BRAF V600E vs KRAS G12D: identical=False overlap=[]
